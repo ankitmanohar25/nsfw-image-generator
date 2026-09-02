@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./generated_images:/app/generated_images
+      - ./backend:/app/backend
+    environment:
+      - MODEL_ID=SexGod1979/PinkCherry_NSFW_LTX23
+      - DEVICE=cpu
+      - OUTPUT_DIR=/app/generated_images
+      - MAX_BATCH_SIZE=4
+      - DEFAULT_STEPS=30
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
